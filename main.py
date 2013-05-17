@@ -3,7 +3,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def puzz_breadth_first(start,end):
     """
-    Breadth First algorithm for solving the 15-puzzle problem
+    Breadth First algorithm
     """
     front = [[puzzle]]
     expanded = []
@@ -29,9 +29,9 @@ def puzz_breadth_first(start,end):
 
 def puzz_astar(start,end):
     """
-    A-Star algorithm for solving the 15-puzzle problem
+    A* algorithm
     """
-    front = [[heuristic_2(start), start]]
+    front = [[heuristic_2(start), start]] #optional: heuristic_1
     expanded = []
     expanded_nodes=0
     while front:
@@ -91,7 +91,7 @@ def moves(mat):
 
 def heuristic_1(puzz):
     """
-    Counting the number of misplaced tiles
+    Counts the number of misplaced tiles
     """ 
     misplaced = 0
     compare = 0
