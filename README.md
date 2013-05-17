@@ -10,7 +10,7 @@ moves that use the empty space.
 The n-puzzle is a classical problem for modelling algorithms involving
 heuristics.
 
-![Alt text]puzzle.jpg
+![Alt text](puzzle.jpg)
 
 Commonly used heuristics for this problem are:
 
