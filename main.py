@@ -1,122 +1,183 @@
 import pprint
-pp = pprint.PrettyPrinter(indent=4)
 
-def puzz_breadth_first(start,end):
-    """
-    Breadth First algorithm
-    """
-    front = [[puzzle]]
-    expanded = []
-    expanded_nodes=0
-    while front:
+PUZZLE_END = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]  # 4x4
+
+
+class PuzzleSolver:
+    def __init__(self, strategy):
+        self._strategy = strategy
+
+    def run(self):
+        self._strategy.do_algorithm()
+
+
+class PuzzleSize:
+    PUZZLE_NUM_ROWS = len(PUZZLE_END)
+    PUZZLE_NUM_COLUMNS = len(PUZZLE_END[0])
+
+
+class StrategyUtils(PuzzleSize):
+    @staticmethod
+    def _to_list(puzzle):
+        """
+        Convert nested tuple to nested list
+        """
+        return [list(row) for row in puzzle]
+
+    @staticmethod
+    def _get_blank_space_coordinates(puzzle):
+        """
+        Returns the i, j coordinates of the 0
+        """
         i = 0
-        for j in range(1, len(front)):    #minimum
-            if len(front[i]) > len(front[j]):
-                i = j
-        path = front[i]         
-        front = front[:i] + front[i+1:]
-        endnode = path[-1]
-        if endnode in expanded: continue
-        for k in moves(endnode):
-            if k in expanded: continue
-            front.append(path + [k])
-        expanded.append(endnode)
-        expanded_nodes += 1
-        if endnode == end: break
-    print "Expanded nodes:",expanded_nodes
-    print "Solution:"
-    pp.pprint(path)
+        while 0 not in puzzle[i]:
+            i += 1
+        j = puzzle[i].index(0)
 
-def puzz_astar(start,end):
-    """
-    A* algorithm
-    """
-    front = [[heuristic_2(start), start]] #optional: heuristic_1
-    expanded = []
-    expanded_nodes=0
-    while front:
-        i = 0
-        for j in range(1, len(front)):
-            if front[i][0] > front[j][0]:
-                i = j
-        path = front[i]
-        front = front[:i] + front[i+1:]
-        endnode = path[-1]
-        if endnode == end:
-            break
-        if endnode in expanded: continue
-        for k in moves(endnode):
-            if k in expanded: continue
-            newpath = [path[0] + heuristic_2(k) - heuristic_2(endnode)] + path[1:] + [k] 
-            front.append(newpath)
-            expanded.append(endnode)
-        expanded_nodes += 1 
-    print "Expanded nodes:", expanded_nodes
-    print "Solution:"
-    pp.pprint(path)
+        return i, j
+
+    def _swap(self, puzzle, x1, y1, x2, y2):
+        """
+        Swap the positions between two elements
+        """
+        p = self._to_list(puzzle)  # copy the puzzle
+        p[x1][y1], p[x2][y2] = p[x2][y2], p[x1][y1]
+
+        return p
+
+    def _get_moves(self, puzzle):
+        """
+        Returns a list of all the possible moves
+        """
+        moves = []
+        i, j = self._get_blank_space_coordinates(puzzle)
+
+        if i > 0:
+            moves.append(self._swap(puzzle, i, j, i - 1, j))  # move up
+
+        if j < self.PUZZLE_NUM_COLUMNS - 1:
+            moves.append(self._swap(puzzle, i, j, i, j + 1))  # move right
+
+        if j > 0:
+            moves.append(self._swap(puzzle, i, j, i, j - 1))  # move left
+
+        if i < self.PUZZLE_NUM_ROWS - 1:
+            moves.append(self._swap(puzzle, i, j, i + 1, j))  # move down
+
+        return moves
 
 
-def moves(mat): 
-    """
-    Returns a list of all possible moves
-    """
-    output = []  
+class StrategyHeuristics(PuzzleSize):
+    def _heuristic_misplaced(self, puzzle):
+        """
+        Counts the number of misplaced tiles
+        """
+        misplaced = 0
 
-    m = eval(mat)   
-    i = 0
-    while 0 not in m[i]: i += 1
-    j = m[i].index(0); #blank space (zero)
+        for i in range(self.PUZZLE_NUM_ROWS):
+            for j in range(self.PUZZLE_NUM_COLUMNS):
+                if puzzle[i][j] != PUZZLE_END[i][j]:
+                    misplaced += 1
 
-    if i > 0:                                   
-      m[i][j], m[i-1][j] = m[i-1][j], m[i][j];  #move up
-      output.append(str(m))
-      m[i][j], m[i-1][j] = m[i-1][j], m[i][j]; 
-      
-    if i < 3:                                   
-      m[i][j], m[i+1][j] = m[i+1][j], m[i][j]   #move down
-      output.append(str(m))
-      m[i][j], m[i+1][j] = m[i+1][j], m[i][j]
+        return misplaced
 
-    if j > 0:                                                      
-      m[i][j], m[i][j-1] = m[i][j-1], m[i][j]   #move left
-      output.append(str(m))
-      m[i][j], m[i][j-1] = m[i][j-1], m[i][j]
+    def _heuristic_manhattan_distance(self, puzzle):
+        """
+        Counts how much is a tile misplaced from the original position
+        """
+        distance = 0
 
-    if j < 3:                                   
-      m[i][j], m[i][j+1] = m[i][j+1], m[i][j]   #move right
-      output.append(str(m))
-      m[i][j], m[i][j+1] = m[i][j+1], m[i][j]
+        for i in range(self.PUZZLE_NUM_ROWS):
+            for j in range(self.PUZZLE_NUM_COLUMNS):
+                misplaced_rows_weight = abs(i - (puzzle[i][j] / self.PUZZLE_NUM_ROWS))
+                misplaced_columns_weight = abs(j - (puzzle[i][j] % self.PUZZLE_NUM_COLUMNS))
 
-    return output
+                distance += misplaced_rows_weight + misplaced_columns_weight
 
-def heuristic_1(puzz):
-    """
-    Counts the number of misplaced tiles
-    """ 
-    misplaced = 0
-    compare = 0
-    m = eval(puzz)
-    for i in range(4):
-        for j in range(4):
-            if m[i][j] != compare:
-                misplaced += 1
-            compare += 1
-    return misplaced
+        return distance
 
-def heuristic_2(puzz):
-    """
-    Manhattan distance
-    """  
-    distance = 0
-    m = eval(puzz)          
-    for i in range(4):
-        for j in range(4):
-            if m[i][j] == 0: continue
-            distance += abs(i - (m[i][j]/4)) + abs(j -  (m[i][j]%4));
-    return distance
+
+class Strategy(StrategyUtils, StrategyHeuristics):
+    num_expanded_nodes = 0
+
+    def do_algorithm(self):
+        raise NotImplemented
+
+
+class AStar(Strategy):
+    def __init__(self, start):
+        self.start = self._to_list(start)
+        self.heuristic = self._heuristic_manhattan_distance  # optional _heuristic_misplaced
+
+    def do_algorithm(self):
+        front = [[self.heuristic(self.start), self.start]]
+        expanded = []
+        num_expanded_nodes = 0
+        path = None
+
+        while front:
+            i = 0
+            for j in range(1, len(front)):
+                if front[i][0] > front[j][0]:
+                    i = j
+            path = front[i]
+            front = front[:i] + front[i + 1:]
+            end_node = path[-1]
+            if end_node == PUZZLE_END:
+                break
+            if end_node in expanded:
+                continue
+            for k in self._get_moves(end_node):
+                if k in expanded:
+                    continue
+                new_path = [path[0] + self.heuristic(k) - self.heuristic(end_node)] + path[1:] + [k]
+                front.append(new_path)
+                expanded.append(end_node)
+            num_expanded_nodes += 1
+
+        self.num_expanded_nodes = num_expanded_nodes
+        print(f'A* - Expanded nodes: {num_expanded_nodes}')
+        print('Solution:')
+        pprint.PrettyPrinter().pprint(path)
+
+
+class BreadthFirst(Strategy):
+    def __init__(self, start):
+        self.start = self._to_list(start)
+
+    def do_algorithm(self):
+        front = [[self.start]]
+        expanded = []
+        num_expanded_nodes = 0
+        path = None
+
+        while front:
+            i = 0
+            for j in range(1, len(front)):  # minimum
+                if len(front[i]) > len(front[j]):
+                    i = j
+            path = front[i]
+            front = front[:i] + front[i + 1:]
+            end_node = path[-1]
+            if end_node in expanded:
+                continue
+            for k in self._get_moves(end_node):
+                if k in expanded:
+                    continue
+                front.append(path + [k])
+            expanded.append(end_node)
+            num_expanded_nodes += 1
+            if end_node == PUZZLE_END:
+                break
+
+        self.num_expanded_nodes = num_expanded_nodes
+        print(f'Breadth First - Expanded nodes: {num_expanded_nodes}')
+        print('Solution:')
+        pprint.PrettyPrinter().pprint(path)
+
 
 if __name__ == '__main__':
-    puzzle = str([[1, 2, 6, 3],[4, 9, 5, 7], [8, 13, 11, 15],[12, 14, 0, 10]])
-    end = str([[0, 1, 2, 3],[4, 5, 6, 7], [8, 9, 10, 11],[12, 13, 14, 15]])
-    puzz_astar(puzzle,end)
-    puzz_breadth_first(puzzle,end)
+    puzzle_start = ((4, 1, 2, 3), (5, 6, 7, 11), (8, 9, 10, 15), (12, 13, 14, 0))
+
+    PuzzleSolver(AStar(puzzle_start)).run()
+    PuzzleSolver(BreadthFirst(puzzle_start)).run()
