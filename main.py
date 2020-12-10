@@ -1,4 +1,4 @@
-import pprint
+from pprint import pprint
 
 PUZZLE_END = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]  # 4x4
 
@@ -104,80 +104,84 @@ class Strategy(StrategyUtils, StrategyHeuristics):
         raise NotImplemented
 
 
-class AStar(Strategy):
-    def __init__(self, start):
-        self.start = self._to_list(start)
-        self.heuristic = self._heuristic_manhattan_distance  # optional _heuristic_misplaced
-
-    def do_algorithm(self):
-        front = [[self.heuristic(self.start), self.start]]
-        expanded = []
-        num_expanded_nodes = 0
-        path = None
-
-        while front:
-            i = 0
-            for j in range(1, len(front)):
-                if front[i][0] > front[j][0]:
-                    i = j
-            path = front[i]
-            front = front[:i] + front[i + 1:]
-            end_node = path[-1]
-            if end_node == PUZZLE_END:
-                break
-            if end_node in expanded:
-                continue
-            for k in self._get_moves(end_node):
-                if k in expanded:
-                    continue
-                new_path = [path[0] + self.heuristic(k) - self.heuristic(end_node)] + path[1:] + [k]
-                front.append(new_path)
-                expanded.append(end_node)
-            num_expanded_nodes += 1
-
-        self.num_expanded_nodes = num_expanded_nodes
-        print(f'A* - Expanded nodes: {num_expanded_nodes}')
-        print('Solution:')
-        pprint.PrettyPrinter().pprint(path)
-
-
 class BreadthFirst(Strategy):
     def __init__(self, start):
         self.start = self._to_list(start)
 
     def do_algorithm(self):
-        front = [[self.start]]
+        queue = [[self.start]]
         expanded = []
         num_expanded_nodes = 0
         path = None
 
-        while front:
-            i = 0
-            for j in range(1, len(front)):  # minimum
-                if len(front[i]) > len(front[j]):
-                    i = j
-            path = front[i]
-            front = front[:i] + front[i + 1:]
+        while queue:
+            path = queue[0]
+            queue.pop(0)  # dequeue (FIFO)
             end_node = path[-1]
+
             if end_node in expanded:
                 continue
+
             for k in self._get_moves(end_node):
                 if k in expanded:
                     continue
-                front.append(path + [k])
+                queue.append(path + [k])  # add new moves at the end of the queue
+
             expanded.append(end_node)
             num_expanded_nodes += 1
+
             if end_node == PUZZLE_END:
                 break
 
         self.num_expanded_nodes = num_expanded_nodes
         print(f'Breadth First - Expanded nodes: {num_expanded_nodes}')
         print('Solution:')
-        pprint.PrettyPrinter().pprint(path)
+        pprint(path)
+
+
+class AStar(Strategy):
+    def __init__(self, start):
+        self.start = self._to_list(start)
+        self.heuristic = self._heuristic_manhattan_distance  # optional: _heuristic_misplaced
+
+    def do_algorithm(self):
+        queue = [[self.heuristic(self.start), self.start]]
+        expanded = []
+        num_expanded_nodes = 0
+        path = None
+
+        while queue:
+            i = 0
+            for j in range(1, len(queue)):
+                if queue[i][0] > queue[j][0]:  # minimum
+                    i = j
+
+            path = queue[i]
+            queue = queue[:i] + queue[i + 1:]
+            end_node = path[-1]
+
+            if end_node == PUZZLE_END:
+                break
+            if end_node in expanded:
+                continue
+
+            for k in self._get_moves(end_node):
+                if k in expanded:
+                    continue
+                new_path = [path[0] + self.heuristic(k) - self.heuristic(end_node)] + path[1:] + [k]
+                queue.append(new_path)
+                expanded.append(end_node)
+
+            num_expanded_nodes += 1
+
+        self.num_expanded_nodes = num_expanded_nodes
+        print(f'A* - Expanded nodes: {num_expanded_nodes}')
+        print('Solution:')
+        pprint(path)
 
 
 if __name__ == '__main__':
     puzzle_start = ((4, 1, 2, 3), (5, 6, 7, 11), (8, 9, 10, 15), (12, 13, 14, 0))
 
-    PuzzleSolver(AStar(puzzle_start)).run()
     PuzzleSolver(BreadthFirst(puzzle_start)).run()
+    PuzzleSolver(AStar(puzzle_start)).run()
