@@ -5,12 +5,21 @@ class PuzzleSolver:
         """
         self._strategy = strategy
 
+    def print_performance(self):
+        print(f'{self._strategy} - Expanded Nodes: {self._strategy.num_expanded_nodes}')
+
+    def print_solution(self):
+        print('Solution:')
+        for p in self._strategy.solution:
+            print(p)
+
     def run(self):
         self._strategy.do_algorithm()
 
 
 class Strategy:
     num_expanded_nodes = 0
+    solution = None
 
     def do_algorithm(self):
         raise NotImplemented
@@ -22,6 +31,9 @@ class BreadthFirst(Strategy):
         :param initial_puzzle: Puzzle
         """
         self.start = initial_puzzle
+
+    def __str__(self):
+        return 'Breadth First'
 
     def do_algorithm(self):
         queue = [[self.start]]
@@ -49,10 +61,7 @@ class BreadthFirst(Strategy):
                 break
 
         self.num_expanded_nodes = num_expanded_nodes
-        print(f'Breadth First - Expanded nodes: {num_expanded_nodes}')
-        print('Solution:')
-        for p in path:
-            print(p)
+        self.solution = path
 
 
 class AStar(Strategy):
@@ -61,6 +70,9 @@ class AStar(Strategy):
         :param initial_puzzle: Puzzle
         """
         self.start = initial_puzzle
+
+    def __str__(self):
+        return 'A*'
 
     @staticmethod
     def _calculate_new_heuristic(move, end_node):
@@ -97,10 +109,7 @@ class AStar(Strategy):
             num_expanded_nodes += 1
 
         self.num_expanded_nodes = num_expanded_nodes
-        print(f'A* - Expanded nodes: {num_expanded_nodes}')
-        print('Solution:')
-        for p in path[1:]:
-            print(p)
+        self.solution = path[1:]
 
 
 class Puzzle:
@@ -147,10 +156,10 @@ class Puzzle:
         """
         Swap the positions between two elements
         """
-        p = [list(row) for row in self.position]  # copy the puzzle
-        p[x1][y1], p[x2][y2] = p[x2][y2], p[x1][y1]
+        puzzle_copy = [list(row) for row in self.position]  # copy the puzzle
+        puzzle_copy[x1][y1], puzzle_copy[x2][y2] = puzzle_copy[x2][y2], puzzle_copy[x1][y1]
 
-        return p
+        return puzzle_copy
 
     def _get_coordinates(self, tile, position=None):
         """
@@ -217,5 +226,8 @@ class Puzzle:
 if __name__ == '__main__':
     puzzle = Puzzle([[4, 1, 2, 3], [5, 6, 7, 11], [8, 9, 10, 15], [12, 13, 14, 0]])
 
-    PuzzleSolver(BreadthFirst(puzzle)).run()
-    PuzzleSolver(AStar(puzzle)).run()
+    for strategy in [BreadthFirst, AStar]:
+        p = PuzzleSolver(strategy(puzzle))
+        p.run()
+        p.print_performance()
+        p.print_solution()
