@@ -14,6 +14,10 @@ heuristics.
 
 Commonly used heuristics for this problem are:
 
-H1: counting the number of misplaced tiles, and
-H2: finding the sum of the Manhattan distances between each block
+* H1: counting the number of misplaced tiles, and
+
+* H2: finding the sum of the Manhattan distances between each block
       and its position in the goal configuration
+      
+
+The code also validates if the puzzle is solvable
