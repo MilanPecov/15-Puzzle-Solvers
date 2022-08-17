@@ -3,14 +3,14 @@ from abc import ABC, abstractmethod
 
 class Strategy(ABC):
     """
-    Performance properties of the different strategies to solve the puzzle
+    Performance properties of the different strategies (algorithms) to solve the puzzle
     """
 
     num_expanded_nodes = 0  # how many nodes in the search tree the algorithms needs to expand to solve the puzzle
     solution = None  # the sequence of operations to solve the puzzle
 
     @abstractmethod
-    def do_algorithm(self):
+    def solve_puzzle(self):
         """
         The algorithm to solve the puzzle
 
@@ -29,7 +29,7 @@ class BreadthFirst(Strategy):
     def __str__(self):
         return 'Breadth First'
 
-    def do_algorithm(self):
+    def solve_puzzle(self):
         queue = [[self.start]]
         expanded = []
         num_expanded_nodes = 0
@@ -72,7 +72,7 @@ class AStar(Strategy):
     def _calculate_new_heuristic(move, end_node):
         return move.heuristic_manhattan_distance() - end_node.heuristic_manhattan_distance()
 
-    def do_algorithm(self):
+    def solve_puzzle(self):
         queue = [[self.start.heuristic_manhattan_distance(), self.start]]
         expanded = []
         num_expanded_nodes = 0
