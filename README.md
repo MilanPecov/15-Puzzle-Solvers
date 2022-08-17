@@ -1,3 +1,5 @@
+# Introduction
+
 The 15-puzzle is a sliding puzzle that consists of a frame of numbered
 square tiles in random order with one tile missing.
 The puzzle also exists in other sizes, particularly the smaller 8-puzzle.
@@ -12,12 +14,102 @@ heuristics.
 
 ![Alt text](puzzle.jpg)
 
-Commonly used heuristics for this problem are:
 
-* H1: counting the number of misplaced tiles, and
+# Installation
+```
+pip install fifteen-puzzle-solvers
+```
 
-* H2: finding the sum of the Manhattan distances between each block
+# Running the puzzle solvers
+
+This code implements two different puzzle solvers
+* Bread First Algorithm
+* A* Algorithm
+  * Heuristic 1: counting the number of misplaces tiles
+  * Heuristic 2: finding the sum of the Manhattan distances between each block
       and its position in the goal configuration
-      
 
-The code also validates if the puzzle is solvable
+```
+from fifteen_puzzle_solvers.puzzle import Puzzle
+from fifteen_puzzle_solvers.algorithms import AStar, BreadthFirst
+from fifteen_puzzle_solvers.solver import PuzzleSolver
+
+puzzle = Puzzle([[1, 2, 3, 4], [5, 6, 7, 8], [0, 10, 11, 12], [9, 13, 14, 15]])
+
+for strategy in [BreadthFirst, AStar]:
+    p = PuzzleSolver(strategy(puzzle))
+    p.run()
+    p.print_performance()
+    p.print_solution()
+```
+
+Output
+```
+Breadth First - Expanded Nodes: 56
+Solution:
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 0│10│11│12│
+│ 9│13│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│ 0│13│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│ 0│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│14│ 0│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│14│15│ 0│
+—————————————
+
+A* - Expanded Nodes: 4
+Solution:
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 0│10│11│12│
+│ 9│13│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│ 0│13│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│ 0│14│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│14│ 0│15│
+—————————————
+—————————————
+│ 1│ 2│ 3│ 4│
+│ 5│ 6│ 7│ 8│
+│ 9│10│11│12│
+│13│14│15│ 0│
+—————————————
+```
+
+

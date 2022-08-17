@@ -1,121 +1,8 @@
-class PuzzleSolver:
-    def __init__(self, strategy):
-        """
-        :param strategy: Strategy
-        """
-        self._strategy = strategy
-
-    def print_performance(self):
-        print(f'{self._strategy} - Expanded Nodes: {self._strategy.num_expanded_nodes}')
-
-    def print_solution(self):
-        print('Solution:')
-        for s in self._strategy.solution:
-            print(s)
-
-    def run(self):
-        if not self._strategy.start.is_solvable():
-            raise RuntimeError('This puzzle is not solvable')
-
-        self._strategy.do_algorithm()
-
-
-class Strategy:
-    num_expanded_nodes = 0
-    solution = None
-
-    def do_algorithm(self):
-        raise NotImplemented
-
-
-class BreadthFirst(Strategy):
-    def __init__(self, initial_puzzle):
-        """
-        :param initial_puzzle: Puzzle
-        """
-        self.start = initial_puzzle
-
-    def __str__(self):
-        return 'Breadth First'
-
-    def do_algorithm(self):
-        queue = [[self.start]]
-        expanded = []
-        num_expanded_nodes = 0
-        path = None
-
-        while queue:
-            path = queue[0]
-            queue.pop(0)  # dequeue (FIFO)
-            end_node = path[-1]
-
-            if end_node.position in expanded:
-                continue
-
-            for move in end_node.get_moves():
-                if move.position in expanded:
-                    continue
-                queue.append(path + [move])  # add new path at the end of the queue
-
-            expanded.append(end_node.position)
-            num_expanded_nodes += 1
-
-            if end_node.position == end_node.PUZZLE_END_POSITION:
-                break
-
-        self.num_expanded_nodes = num_expanded_nodes
-        self.solution = path
-
-
-class AStar(Strategy):
-    def __init__(self, initial_puzzle):
-        """
-        :param initial_puzzle: Puzzle
-        """
-        self.start = initial_puzzle
-
-    def __str__(self):
-        return 'A*'
-
-    @staticmethod
-    def _calculate_new_heuristic(move, end_node):
-        return move.heuristic_manhattan_distance() - end_node.heuristic_manhattan_distance()
-
-    def do_algorithm(self):
-        queue = [[self.start.heuristic_manhattan_distance(), self.start]]
-        expanded = []
-        num_expanded_nodes = 0
-        path = None
-
-        while queue:
-            i = 0
-            for j in range(1, len(queue)):
-                if queue[i][0] > queue[j][0]:  # minimum
-                    i = j
-
-            path = queue[i]
-            queue = queue[:i] + queue[i + 1:]
-            end_node = path[-1]
-
-            if end_node.position == end_node.PUZZLE_END_POSITION:
-                break
-            if end_node.position in expanded:
-                continue
-
-            for move in end_node.get_moves():
-                if move.position in expanded:
-                    continue
-                new_path = [path[0] + self._calculate_new_heuristic(move, end_node)] + path[1:] + [move]
-                queue.append(new_path)
-                expanded.append(end_node.position)
-
-            num_expanded_nodes += 1
-
-        self.num_expanded_nodes = num_expanded_nodes
-        self.solution = path[1:]
-
-
 class Puzzle:
+    """
+    Generic sliding puzzle with any square matrix size (e.g. 3x3, 4x4...)
+    """
+
     def __init__(self, position):
         """
         :param position: a list of lists representing the puzzle matrix
@@ -124,6 +11,9 @@ class Puzzle:
         self.PUZZLE_NUM_ROWS = len(position)
         self.PUZZLE_NUM_COLUMNS = len(position[0])
         self.PUZZLE_END_POSITION = self._generate_end_position()
+
+        if self.PUZZLE_NUM_ROWS != self.PUZZLE_NUM_COLUMNS:
+            raise RuntimeError('Invalid Puzzle dimensions')
 
     def __str__(self):
         """
@@ -250,13 +140,17 @@ class Puzzle:
         return distance
 
     def is_solvable(self):
-        # 1. If N is odd, then puzzle instance is solvable if number of inversions is even in the input state.
-        # 2. If N is even, puzzle instance is solvable if
-        #    - the blank is on an even row counting from the bottom (second-last, fourth-last, etc.)
-        #      and number of inversions is odd.
-        #    - the blank is on an odd row counting from the bottom (last, third-last, fifth-last, etc.)
-        #    and number of inversions is even.
-        # 3. For all other cases, the puzzle instance is not solvable.
+        """
+         1. If N is odd, then puzzle instance is solvable if number of inversions is even in the input state.
+         2. If N is even, puzzle instance is solvable if
+            - the blank is on an even row counting from the bottom (second-last, fourth-last, etc.)
+              and number of inversions is odd.
+            - the blank is on an odd row counting from the bottom (last, third-last, fifth-last, etc.)
+            and number of inversions is even.
+         3. For all other cases, the puzzle instance is not solvable.
+
+        :return: Boolean if the puzzle is solvable or not
+        """
 
         inversions_count = self._get_inversions_count()
         blank_position = self._get_blank_space_row_counting_from_bottom()
@@ -269,13 +163,3 @@ class Puzzle:
             return True
         else:
             return False
-
-
-if __name__ == '__main__':
-    puzzle = Puzzle([[1, 2, 3, 4], [5, 6, 7, 8], [0, 10, 11, 12], [9, 13, 14, 15]])
-
-    for strategy in [BreadthFirst, AStar]:
-        p = PuzzleSolver(strategy(puzzle))
-        p.run()
-        p.print_performance()
-        p.print_solution()
