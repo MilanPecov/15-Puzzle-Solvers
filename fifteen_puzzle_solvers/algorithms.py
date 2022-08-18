@@ -100,7 +100,7 @@ class AStar(Strategy):
     def solve_puzzle(self):
         # Each sublist in the queue is a path to be explored and the first element of the path
         # is the total heuristic (integer) value for that path
-        queue = [[self.start.heuristic_manhattan_distance(), self.start]]
+        queue = [[getattr(self.start, self.heuristic_function)(), self.start]]
         path = []  # the current path that we want to explore
         expanded = []  # keeps track on the positions that have already been explored
         num_expanded_nodes = 0  # counter used for performance analysis

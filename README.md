@@ -9,6 +9,7 @@ respectively, for the number of tiles and the number of spaces.
 
 The object of the puzzle is to place the tiles in order by making sliding
 moves that use the empty space.
+
 The n-puzzle is a classical problem for modelling algorithms involving
 heuristics.
 
