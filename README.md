@@ -37,10 +37,10 @@ from fifteen_puzzle_solvers.solver import PuzzleSolver
 puzzle = Puzzle([[1, 2, 3, 4], [5, 6, 7, 8], [0, 10, 11, 12], [9, 13, 14, 15]])
 
 for strategy in [BreadthFirst, AStar]:
-    p = PuzzleSolver(strategy(puzzle))
-    p.run()
-    p.print_performance()
-    p.print_solution()
+    puzzle_solver = PuzzleSolver(strategy(puzzle))
+    puzzle_solver.run()
+    puzzle_solver.print_performance()
+    puzzle_solver.print_solution()
 ```
 
 Output
@@ -112,4 +112,24 @@ Solution:
 —————————————
 ```
 
+# Testing different A* heuristic functions
+```
+from fifteen_puzzle_solvers.puzzle import Puzzle
+from fifteen_puzzle_solvers.algorithms import AStar
+from fifteen_puzzle_solvers.solver import PuzzleSolver
 
+puzzle = Puzzle([[0, 1, 2], [3, 4, 5], [6, 7, 8]])  # 3x3 puzzle
+puzzle.generate_random_position()
+
+puzzle_solver = PuzzleSolver(AStar(puzzle, heuristic='misplaced'))
+puzzle_solver.run()
+puzzle_solver.print_performance()
+
+>> Output: A* - Expanded Nodes: 979
+
+puzzle_solver = PuzzleSolver(AStar(puzzle, heuristic='manhattan_distance'))  # default heuristic
+puzzle_solver.run()
+puzzle_solver.print_performance()
+
+>> Output: A* - Expanded Nodes: 180
+```
