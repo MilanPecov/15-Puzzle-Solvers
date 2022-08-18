@@ -31,6 +31,15 @@ def test_get_coordinates():
     assert j == 3
 
 
+def test_generate_random_position():
+    initial_position = [[1, 2, 6, 3], [4, 9, 5, 7], [8, 13, 11, 15], [12, 14, 0, 10]]
+    puzzle = Puzzle(initial_position.copy())
+    puzzle.generate_random_position()
+    new_position = puzzle.position
+
+    assert initial_position != new_position
+
+
 def test_all_possible_moves():
     puzzle = Puzzle([[1, 2, 3, 4], [5, 6, 0, 7], [8, 9, 10, 11], [12, 13, 14, 15]])
     output = puzzle.get_moves()
@@ -93,9 +102,15 @@ def test_performance():
     s1.print_solution()
     assert s1._strategy.num_expanded_nodes == 4
 
+    s1 = PuzzleSolver(AStar(puzzle_start, heuristic='misplaced'))
+    s1.run()
+    s1.print_solution()
+    assert s1._strategy.num_expanded_nodes == 4
+
 
 if __name__ == "__main__":
     test_generate_end_position()
+    test_generate_random_position()
     test_swap()
     test_get_coordinates()
     test_all_possible_moves()

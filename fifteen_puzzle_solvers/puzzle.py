@@ -1,3 +1,6 @@
+import random
+
+
 class Puzzle:
     """
     Generic sliding puzzle with any square matrix size (e.g. 3x3, 4x4...)
@@ -19,14 +22,17 @@ class Puzzle:
         """
         Print in console as a matrix
         """
-        puzzle_string = '—' * 13 + '\n'
+        puzzle_length = (3 * self.PUZZLE_NUM_ROWS) + 1
+        puzzle_string = '—' * puzzle_length + '\n'
+
         for i in range(self.PUZZLE_NUM_ROWS):
             for j in range(self.PUZZLE_NUM_COLUMNS):
                 puzzle_string += '│{0: >2}'.format(str(self.position[i][j]))
                 if j == self.PUZZLE_NUM_COLUMNS - 1:
                     puzzle_string += '│\n'
 
-        puzzle_string += '—' * 13 + '\n'
+        puzzle_string += '—' * puzzle_length + '\n'
+
         return puzzle_string
 
     def _generate_end_position(self):
@@ -43,7 +49,8 @@ class Puzzle:
                 end_position.append(new_row)
                 new_row = []
 
-        end_position[-1][-1] = 0
+        end_position[-1][-1] = 0  # add blank space at the end
+
         return end_position
 
     def _swap(self, x1, y1, x2, y2):
@@ -163,3 +170,15 @@ class Puzzle:
             return True
         else:
             return False
+
+    def generate_random_position(self):
+        """
+        Shuffles the puzzle
+        """
+        while True:
+            random.shuffle(self.position)  # shuffle rows
+            for row in self.position:
+                random.shuffle(row)  # shuffle columns
+
+            if self.is_solvable():
+                break
