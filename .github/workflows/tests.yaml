@@ -23,6 +23,4 @@ jobs:
 
       - name: Python Tests
         run: |
-          cp -r fifteen_puzzle_solver .
-          cp -r tests .
           python tests/tests.py

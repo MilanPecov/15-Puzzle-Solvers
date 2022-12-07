@@ -1,6 +1,6 @@
-from fifteen_puzzle_solvers.puzzle import Puzzle
-from fifteen_puzzle_solvers.algorithms import AStar, BreadthFirst
-from fifteen_puzzle_solvers.solver import PuzzleSolver
+from puzzle import Puzzle
+from algorithms import AStar, BreadthFirst
+from solver import PuzzleSolver
 
 
 def test_generate_end_position():
