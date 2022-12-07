@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from fifteen_puzzle_solvers.puzzle import Puzzle
+from puzzle import Puzzle
 
 
 class Strategy(ABC):
