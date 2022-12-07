@@ -1,3 +1,5 @@
+[![Tests](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml/badge.svg)](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml)
+
 # Introduction
 
 The 15-puzzle is a sliding puzzle that consists of a frame of numbered
