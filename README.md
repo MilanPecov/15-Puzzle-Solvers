@@ -134,3 +134,23 @@ puzzle_solver.print_performance()
 
 >> Output: A* - Expanded Nodes: 180
 ```
+
+# Under the hood
+
+Both the Breadth First and A* algorithms take an initial puzzle state as input and return a list of Puzzle objects that represent the sequence of moves needed to solve the puzzle.
+
+## BreadthFirst
+
+Uses a queue list to keep track of the paths that need to be explored. 
+The algorithm begins by adding the initial puzzle state to the queue list. Then, it repeatedly takes the 
+first path from the queue list, gets all the possible moves from the last position in the path, and adds the 
+new paths to the end of the queue list. This process continues until the end position of the puzzle is reached 
+or there are no more paths to explore.
+
+## A*
+Has a few additional attributes and methods compared to the Breadth First algorithm, 
+namely **manhattan_distance** and **misplaced**, which are string constants used to specify the heuristic 
+function to use. It uses a queue list to keep track of the paths that 
+need to be explored, but it calculates the total heuristic value of each path and adds the path along with 
+its heuristic value to the queue list. This allows the **solve_puzzle** method to find the path with the 
+lowest heuristic value and explore that path first.

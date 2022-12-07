@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from fifteen_puzzle_solvers.puzzle import Puzzle
 
@@ -22,16 +23,35 @@ class Strategy(ABC):
 
 
 class BreadthFirst(Strategy):
-    def __init__(self, initial_puzzle):
-        """
-        :param initial_puzzle: Puzzle
-        """
+    """
+    Implements a breadth-first search algorithm to solve a fifteen puzzle.
+    It takes an initial puzzle state as input and returns a list of Puzzle objects
+    that represents the sequence of moves to solve the puzzle.
+    """
+    def __init__(self, initial_puzzle: Puzzle):
         self.start = initial_puzzle
 
     def __str__(self):
         return 'Breadth First'
 
-    def solve_puzzle(self):
+    def solve_puzzle(self) -> List[Puzzle]:
+        """
+        Uses a queue list to keep track of the paths that need to be explored.
+        The algorithm  begins by adding the initial puzzle state to the queue list. Then, it repeatedly takes the first
+        path from the queue list, gets all the possible moves from the last position in the path, and adds the new paths
+        to the end of the queue list. This process continues until the end position of the puzzle is reached or
+        there are no more paths to explore.
+
+        Also keeps track of the positions that have been explored using the expanded list, in order to avoid circular
+        logic.
+
+        It also increments a counter for the number of expanded nodes, which is stored in the num_expanded_nodes
+        attribute
+
+        Finally, it sets the solution attribute to the concatenation of all the paths in the queue list that lead to the
+        end position of the puzzle.
+        """
+
         queue = [[self.start]]  # list of lists with Puzzle objects. Each sublist is a path to be explored
         path = []  # the current path that we want to explore
         expanded = []  # keeps track on the positions that have already been explored
@@ -60,8 +80,16 @@ class BreadthFirst(Strategy):
         self.num_expanded_nodes = num_expanded_nodes  # increment the performance counter
         self.solution = path
 
+        return self.solution
+
 
 class AStar(Strategy):
+    """
+    Implements an A* search algorithm to solve a fifteen puzzle. The AStar class has a few additional attributes and
+    methods compared to the BreadthFirst class, namely manhattan_distance and misplaced,
+    which are string constants used to specify the heuristic function to use for the A* search algorithm.
+    """
+
     HEURISTIC_MANHATTAN_DISTANCE, HEURISTIC_MISPLACED = 'manhattan_distance', 'misplaced'
     HEURISTIC_CONSTANTS = [HEURISTIC_MANHATTAN_DISTANCE, HEURISTIC_MISPLACED]
 
@@ -71,11 +99,11 @@ class AStar(Strategy):
         HEURISTIC_MISPLACED: Puzzle.heuristic_misplaced.__name__
     }
 
-    def __init__(self, initial_puzzle, heuristic=None):
+    def __init__(self, initial_puzzle: Puzzle, heuristic: str = None):
         """
-        :param initial_puzzle: Puzzle
-        :param heuristic: 'manhattan_distance' (default) or 'misplaced'
+        Takes an initial puzzle state and an optional heuristic function name as input.
         """
+
         self.start = initial_puzzle
         self.heuristic_function = self.heuristic_functions[self.HEURISTIC_MANHATTAN_DISTANCE]
 
@@ -87,17 +115,30 @@ class AStar(Strategy):
     def __str__(self):
         return 'A*'
 
-    def _calculate_new_heuristic(self, move, end_node):
+    def _calculate_new_heuristic(self, move: Puzzle, end_node: Puzzle) -> int:
         """
         Heuristic that calculates how good the current move is
-
-        :param move: Puzzle
-        :param end_node: Puzzle
-        :return: heuristic value (integer)
         """
+
         return getattr(move, self.heuristic_function)() - getattr(end_node, self.heuristic_function)()
 
-    def solve_puzzle(self):
+    def solve_puzzle(self) -> List[Puzzle]:
+        """
+        Uses a queue list to keep track of the paths that need to be explored. However, instead of simply adding the
+        paths to the end of the queue list, it calculates the total heuristic value of each path and adds the path
+        along with its heuristic value to the queue list. This allows the solve_puzzle method to find the path with the
+        lowest heuristic value and explore that path first.
+
+        _calculate_new_heuristic method is used to calculate the heuristic value of each new move and add it to the
+        total heuristic value of the path.
+
+        It also increments a counter for the number of expanded nodes, which is stored in the num_expanded_nodes
+        attribute.
+
+        Finally, it sets the solution attribute to the concatenation of all the paths in the queue list that lead
+        to the end position of the puzzle.
+        """
+
         # Each sublist in the queue is a path to be explored and the first element of the path
         # is the total heuristic (integer) value for that path
         queue = [[getattr(self.start, self.heuristic_function)(), self.start]]
@@ -135,3 +176,5 @@ class AStar(Strategy):
         # set base class values
         self.num_expanded_nodes = num_expanded_nodes
         self.solution = path[1:]
+
+        return self.solution
