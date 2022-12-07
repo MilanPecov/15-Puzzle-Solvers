@@ -5,5 +5,5 @@ setup(
     description='Different solvers for the 15 puzzle sliding game',
     name='fifteen_puzzle_solvers',
     packages=find_packages(include=['fifteen_puzzle_solvers', ]),
-    version='0.0.3',
+    version='0.1.0',
 )
