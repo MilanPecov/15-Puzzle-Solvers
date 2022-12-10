@@ -26,7 +26,7 @@ pip install fifteen-puzzle-solvers
 # Running the puzzle solvers
 
 This code implements two different puzzle solvers
-* Bread First Algorithm
+* Breadth First Algorithm
 * A* Algorithm
   * Heuristic 1: counting the number of misplaces tiles
   * Heuristic 2: finding the sum of the Manhattan distances between each block
