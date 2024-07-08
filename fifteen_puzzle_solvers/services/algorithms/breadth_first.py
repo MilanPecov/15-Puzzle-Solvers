@@ -1,7 +1,7 @@
 from typing import List
 
-from domain import Puzzle
-from services.algorithms.base import IStrategy
+from fifteen_puzzle_solvers.domain import Puzzle
+from fifteen_puzzle_solvers.services.algorithms.base import IStrategy
 
 
 class BreadthFirst(IStrategy):

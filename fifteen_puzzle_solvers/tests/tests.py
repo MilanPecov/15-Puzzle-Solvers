@@ -1,7 +1,7 @@
-from domain.puzzle import Puzzle
-from services.puzzle import PuzzleHeuristicService, PuzzleShuffleService, PuzzleValidationService
-from services.algorithms import AStar, BreadthFirst
-from services.solver import PuzzleSolver
+from fifteen_puzzle_solvers.domain.puzzle import Puzzle
+from fifteen_puzzle_solvers.services.puzzle import PuzzleHeuristicService, PuzzleShuffleService, PuzzleValidationService
+from fifteen_puzzle_solvers.services.algorithms import AStar, BreadthFirst
+from fifteen_puzzle_solvers.services.solver import PuzzleSolver
 
 
 def test_generate_end_position():

@@ -1,4 +1,4 @@
-from domain import Puzzle
+from fifteen_puzzle_solvers.domain import Puzzle
 
 
 class PuzzleValidationService:

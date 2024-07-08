@@ -1,6 +1,3 @@
-from domain import Puzzle
-
-
 class PuzzleHeuristicService:
     """
     Provides services for calculating puzzle heuristics.

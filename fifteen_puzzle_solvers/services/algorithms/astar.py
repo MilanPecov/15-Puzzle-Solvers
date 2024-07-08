@@ -1,6 +1,6 @@
 from typing import List
 
-from domain import Puzzle
+from fifteen_puzzle_solvers.domain import Puzzle
 
 from fifteen_puzzle_solvers.services.algorithms.base import IStrategy
 from fifteen_puzzle_solvers.services.puzzle.heuristic import PuzzleHeuristicService
