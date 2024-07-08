@@ -23,4 +23,4 @@ jobs:
 
       - name: Python Tests
         run: |
-          python fifteen_puzzle_solvers/tests/tests.py
+          python3 -m fifteen_puzzle_solvers.tests.tests
