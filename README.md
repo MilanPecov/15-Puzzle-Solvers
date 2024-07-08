@@ -13,12 +13,17 @@ nodes, thereby improving efficiency. The heuristics, such as Manhattan Distance 
 and Walking Distance (WD), are combined in a hybrid approach to provide optimal or near-optimal solutions
 while maintaining manageable space complexity.
 
-![Alt text](puzzle.jpg)
-
+![Alt text](puzzle_img1.png) ![Alt text](puzzle_img2.png)
 
 # Installation
 ```
 pip install fifteen-puzzle-solvers
+```
+
+## Running the GUI
+```
+# requires `tkinter` to be installed
+python3 -m fifteen_puzzle_solvers.main
 ```
 
 # Running the puzzle solvers
@@ -154,7 +159,8 @@ or there are no more paths to explore.
 
 ## A*
 The A* algorithm is an extension of the Breadth-First Search that uses heuristics to prioritize which paths to explore. It maintains a priority queue where each path is associated with a cost, which is the sum of the path length and a heuristic estimate of the remaining cost to reach the goal.
-Heuristics
+
+### Heuristics
 
 Heuristics are used to estimate the cost of reaching the goal from a given state. The A* algorithm in this implementation supports the following heuristics:
 
@@ -166,3 +172,18 @@ This heuristic calculates the sum of the Manhattan distances (i.e., the sum of t
 
 * Total Heuristic (Default):
 This heuristic combines multiple heuristic functions—Manhattan distance, linear conflict, and walking distance—to provide a comprehensive estimate. This combination balances accuracy and performance, making it the default choice for solving the puzzle efficiently.
+
+
+## How to Play
+
+* Shuffle: Click the "Shuffle" button to shuffle the puzzle.
+* Solve: Click the "Solve" button to automatically solve the puzzle using the selected algorithm.
+* Manual Play: Click on the tiles adjacent to the empty space to move them.
+* Previous/Next Steps: After solving the puzzle, use the "Previous Step" and "Next Step" buttons to navigate through the solution steps.
+
+## Directory Overview
+
+* domain/: Contains the core logic and data structures for the puzzle game.
+* services/: Includes the algorithms and services for shuffling and solving the puzzle.
+* tests/: Contains test cases for the project.
+* ui/: Holds the graphical user interface code.
