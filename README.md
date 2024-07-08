@@ -2,18 +2,16 @@
 
 # Introduction
 
-The 15-puzzle is a sliding puzzle that consists of a frame of numbered
-square tiles in random order with one tile missing.
-The puzzle also exists in other sizes, particularly the smaller 8-puzzle.
-If the size is 3x3 tiles, the puzzle is called the 8-puzzle or 9-puzzle, and
-if 4x4 tiles, the puzzle is called the 15-puzzle or 16-puzzle named,
-respectively, for the number of tiles and the number of spaces.
+The 15-puzzle is a classic problem that has captivated mathematics enthusiasts for centuries. The objective
+is to arrange the tiles in order by sliding them into the empty space. The challenge lies in its vast 
+state space, with approximately 10<sup>13</sup> possible configurations. Numerous algorithms have been 
+developed to tackle the 15-puzzle, highlighting its complexity and the significant challenge it presents.
 
-The object of the puzzle is to place the tiles in order by making sliding
-moves that use the empty space.
-
-The n-puzzle is a classical problem for modelling algorithms involving
-heuristics.
+In this project, we employ advanced algorithms to effectively manage this large state space. Specifically,
+the A* algorithm utilizes multiple heuristics to reduce the number of states generated and expand fewer 
+nodes, thereby improving efficiency. The heuristics, such as Manhattan Distance (MD), Linear Conflict (LC),
+and Walking Distance (WD), are combined in a hybrid approach to provide optimal or near-optimal solutions
+while maintaining manageable space complexity.
 
 ![Alt text](puzzle.jpg)
 
@@ -25,17 +23,18 @@ pip install fifteen-puzzle-solvers
 
 # Running the puzzle solvers
 
-This code implements two different puzzle solvers
+This code implements two different puzzle solvers:
 * Breadth First Algorithm
-* A* Algorithm
-  * Heuristic 1: counting the number of misplaces tiles
-  * Heuristic 2: finding the sum of the Manhattan distances between each block
+* __A* Algorithm__
+  * **Heuristic 1:** Counting the number of misplaced tiles
+  * **Heuristic 2:** Finding the sum of the Manhattan distances between each block
       and its position in the goal configuration
+  * **Heuristic 3:** Combining Manhattan distance, Linear Conflict, and walking distance for a comprehensive estimate (default heuristic)
 
 ```
-from fifteen_puzzle_solvers.puzzle import Puzzle
-from fifteen_puzzle_solvers.algorithms import AStar, BreadthFirst
-from fifteen_puzzle_solvers.solver import PuzzleSolver
+from fifteen_puzzle_solvers.domain import Puzzle
+from fifteen_puzzle_solvers.services.algorithms import AStar, BreadthFirst
+from fifteen_puzzle_solvers.services.solver import PuzzleSolver
 
 puzzle = Puzzle([[1, 2, 3, 4], [5, 6, 7, 8], [0, 10, 11, 12], [9, 13, 14, 15]])
 
@@ -43,7 +42,7 @@ for strategy in [BreadthFirst, AStar]:
     puzzle_solver = PuzzleSolver(strategy(puzzle))
     puzzle_solver.run()
     puzzle_solver.print_performance()
-    puzzle_solver.print_solution()
+    puzzle_solver.print_solution()  
 ```
 
 Output
@@ -117,24 +116,28 @@ Solution:
 
 # Testing different A* heuristic functions
 ```
-from fifteen_puzzle_solvers.puzzle import Puzzle
-from fifteen_puzzle_solvers.algorithms import AStar
-from fifteen_puzzle_solvers.solver import PuzzleSolver
+from fifteen_puzzle_solvers.domain.puzzle import Puzzle
+from fifteen_puzzle_solvers.services.algorithms import AStar
+from fifteen_puzzle_solvers.services.solver import PuzzleSolver
+from fifteen_puzzle_solvers.services.puzzle.shuffle import PuzzleShuffleService
 
-puzzle = Puzzle([[0, 1, 2], [3, 4, 5], [6, 7, 8]])  # 3x3 puzzle
-puzzle.generate_random_position()
+# Generate a shuffled 3x3 puzzle using the PuzzleShuffleService
+shuffled_puzzle = PuzzleShuffleService.shuffle_puzzle(3)
 
-puzzle_solver = PuzzleSolver(AStar(puzzle, heuristic='misplaced'))
+# Create a solver using the A* algorithm with the 'misplaced' heuristic
+puzzle_solver = PuzzleSolver(AStar(shuffled_puzzle, heuristic='misplaced'))
 puzzle_solver.run()
+
+# Print the performance and the solution
 puzzle_solver.print_performance()
 
 >> Output: A* - Expanded Nodes: 979
 
-puzzle_solver = PuzzleSolver(AStar(puzzle, heuristic='manhattan_distance'))  # default heuristic
+puzzle_solver = PuzzleSolver(AStar(puzzle, heuristic='total'))  # default
 puzzle_solver.run()
 puzzle_solver.print_performance()
 
->> Output: A* - Expanded Nodes: 180
+>> Output: A* - Expanded Nodes: 68
 ```
 
 # Under the hood
@@ -150,9 +153,16 @@ new paths to the end of the queue list. This process continues until the end pos
 or there are no more paths to explore.
 
 ## A*
-Has a few additional attributes and methods compared to the Breadth First algorithm, 
-namely **manhattan_distance** and **misplaced**, which are string constants used to specify the heuristic 
-function to use. It uses a queue list to keep track of the paths that 
-need to be explored, but it calculates the total heuristic value of each path and adds the path along with 
-its heuristic value to the queue list. This allows the **solve_puzzle** method to find the path with the 
-lowest heuristic value and explore that path first.
+The A* algorithm is an extension of the Breadth-First Search that uses heuristics to prioritize which paths to explore. It maintains a priority queue where each path is associated with a cost, which is the sum of the path length and a heuristic estimate of the remaining cost to reach the goal.
+Heuristics
+
+Heuristics are used to estimate the cost of reaching the goal from a given state. The A* algorithm in this implementation supports the following heuristics:
+
+* Misplaced Tiles:
+This heuristic counts the number of tiles that are not in their goal position. It is simple but not always very accurate.
+
+* Manhattan Distance:
+This heuristic calculates the sum of the Manhattan distances (i.e., the sum of the absolute differences of the row and column indices) of the tiles from their goal positions. It is more accurate than the misplaced tiles heuristic.
+
+* Total Heuristic (Default):
+This heuristic combines multiple heuristic functions—Manhattan distance, linear conflict, and walking distance—to provide a comprehensive estimate. This combination balances accuracy and performance, making it the default choice for solving the puzzle efficiently.
