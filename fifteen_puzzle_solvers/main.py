@@ -1,8 +1,12 @@
+import tkinter as tk
 from fifteen_puzzle_solvers.ui.puzzle_game import PuzzleGame
 
-if __name__ == "__main__":
-    import tkinter as tk
 
+def run_ui():
     root = tk.Tk()
-    game = PuzzleGame(root)
+    PuzzleGame(root)
     root.mainloop()
+
+
+if __name__ == "__main__":
+    run_ui()

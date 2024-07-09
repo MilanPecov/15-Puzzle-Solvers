@@ -23,7 +23,8 @@ pip install fifteen-puzzle-solvers
 ## Running the GUI
 ```
 # requires `tkinter` to be installed
-python3 -m fifteen_puzzle_solvers.main
+from fifteen_puzzle_solvers import run_ui
+run_ui()
 ```
 
 # Running the puzzle solvers
