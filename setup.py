@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='fifteen_puzzle_solvers',
-    version='1.2.0',
+    version='2.0.0',
     author='Milan Pecov',
     author_email='mpecov@yahoo.ca',
     description='Different solvers for the 15 puzzle sliding game',
