@@ -28,3 +28,7 @@ class PuzzleSolver:
 
     def get_solution(self):
         return self._strategy.solution
+
+    def stop(self):
+        if hasattr(self._strategy, 'stop'):
+            self._strategy.stop()

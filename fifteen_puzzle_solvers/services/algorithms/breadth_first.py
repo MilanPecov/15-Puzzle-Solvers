@@ -1,16 +1,17 @@
 from typing import List
-
 from fifteen_puzzle_solvers.domain import Puzzle
 from fifteen_puzzle_solvers.services.algorithms.base import IStrategy
+from fifteen_puzzle_solvers.services.puzzle.constants import BREADTH_FIRST
 
 
 class BreadthFirst(IStrategy):
     def __init__(self, initial_puzzle: Puzzle):
         self.start = initial_puzzle
         self.end_position = initial_puzzle.generate_end_position(len(initial_puzzle.position))
+        self.should_stop = False
 
     def __str__(self):
-        return 'Breadth First'
+        return BREADTH_FIRST
 
     def solve_puzzle(self) -> List[Puzzle]:
         queue = [[self.start]]
@@ -18,7 +19,7 @@ class BreadthFirst(IStrategy):
         expanded = set()  # Use a set for faster lookups
         num_expanded_nodes = 0
 
-        while queue:
+        while queue and not self.should_stop:
             path = queue.pop(0)
             end_node = path[-1]
 
@@ -39,3 +40,6 @@ class BreadthFirst(IStrategy):
         self.num_expanded_nodes = num_expanded_nodes
         self.solution = path
         return self.solution
+
+    def stop(self):
+        self.should_stop = True
