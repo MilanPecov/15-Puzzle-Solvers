@@ -15,14 +15,14 @@ while maintaining manageable space complexity.
 ![Alt text](https://raw.githubusercontent.com/MilanPecov/15-Puzzle-Solvers/refs/heads/master/puzzle_img1.png) ![Alt text](https://raw.githubusercontent.com/MilanPecov/15-Puzzle-Solvers/refs/heads/master/puzzle_img2.png)
 
 # Installation
-```
+```shell
 pip install fifteen-puzzle-solvers
 
 ```
 > **Note:** On Ubuntu/Debian, install GUI support with: `sudo apt install python3-tk`
 
 ## Running the GUI
-```
+```python
 # requires `tkinter` to be installed
 from fifteen_puzzle_solvers import run_ui
 run_ui()
