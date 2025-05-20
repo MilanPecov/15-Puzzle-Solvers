@@ -1,7 +1,6 @@
-[![Tests](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml/badge.svg)](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml)
+[![Tests](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml/badge.svg)](https://github.com/MilanPecov/15-Puzzle-Solvers/actions/workflows/tests.yaml) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MilanPecov/15-Puzzle-Solvers)
 
 # Introduction
-
 The 15-puzzle is a classic problem that has captivated mathematics enthusiasts for centuries. The objective
 is to arrange the tiles in order by sliding them into the empty space. The challenge lies in its vast 
 state space, with approximately 10<sup>13</sup> possible configurations. Numerous algorithms have been 
@@ -13,7 +12,7 @@ nodes, thereby improving efficiency. The heuristics, such as Manhattan Distance 
 and Walking Distance (WD), are combined in a hybrid approach to provide optimal or near-optimal solutions
 while maintaining manageable space complexity.
 
-![Alt text](puzzle_img1.png) ![Alt text](puzzle_img2.png)
+![Alt text](https://raw.githubusercontent.com/MilanPecov/15-Puzzle-Solvers/refs/heads/master/puzzle_img1.png) ![Alt text](https://raw.githubusercontent.com/MilanPecov/15-Puzzle-Solvers/refs/heads/master/puzzle_img2.png)
 
 # Installation
 ```
