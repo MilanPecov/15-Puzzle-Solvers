@@ -38,7 +38,7 @@ This code implements two different puzzle solvers:
       and its position in the goal configuration
   * **Heuristic 3:** Combining Manhattan distance, Linear Conflict, and walking distance for a comprehensive estimate (default heuristic)
 
-```
+```python
 from fifteen_puzzle_solvers.domain import Puzzle
 from fifteen_puzzle_solvers.services.algorithms import AStar, BreadthFirst
 from fifteen_puzzle_solvers.services.solver import PuzzleSolver
@@ -122,7 +122,7 @@ Solution:
 ```
 
 # Testing different A* heuristic functions
-```
+```python
 from fifteen_puzzle_solvers.domain.puzzle import Puzzle
 from fifteen_puzzle_solvers.services.algorithms import AStar
 from fifteen_puzzle_solvers.services.solver import PuzzleSolver
