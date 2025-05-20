@@ -17,7 +17,9 @@ while maintaining manageable space complexity.
 # Installation
 ```
 pip install fifteen-puzzle-solvers
+
 ```
+> **Note:** On Ubuntu/Debian, install GUI support with: `sudo apt install python3-tk`
 
 ## Running the GUI
 ```

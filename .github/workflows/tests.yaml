@@ -10,8 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12' ]
-
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout repository
@@ -22,10 +21,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Install GUI system dependencies (tkinter)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk
+
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .[GUI]
+          pip install -e .
 
       - name: Run tests
         run: |

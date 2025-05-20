@@ -22,9 +22,6 @@ setup(
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    extras_require={
-        'GUI': ['tkinter'],
-    },
     keywords='15-puzzle sliding-game algorithms A* breadth-first search heuristics python path-finding',
     python_requires='>=3.6',
 )
